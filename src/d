@@ -1,0 +1,19 @@
+                                                List of databases
+      Name      |  Owner   | Encoding | Collate |  Ctype  | ICU Locale | Locale Provider |   Access privileges   
+----------------+----------+----------+---------+---------+------------+-----------------+-----------------------
+ coder_first_db | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | 
+ dev_db         | jenn     | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | 
+ jenn           | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | 
+ postgres       | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | 
+ recipe_mvc_db  | jenn     | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =Tc/jenn             +
+                |          |          |         |         |            |                 | jenn=CTc/jenn        +
+                |          |          |         |         |            |                 | recipe_dev=CTc/jenn
+ template0      | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+                |          |          |         |         |            |                 | postgres=CTc/postgres
+ template1      | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+                |          |          |         |         |            |                 | postgres=CTc/postgres
+ trello_mvc_db  | jenn     | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =Tc/jenn             +
+                |          |          |         |         |            |                 | jenn=CTc/jenn        +
+                |          |          |         |         |            |                 | trello_dev=CTc/jenn
+(8 rows)
+
