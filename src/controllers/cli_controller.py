@@ -1,6 +1,7 @@
 from flask import Blueprint
 from init import db, bcrypt
 from models.user import User 
+from models.recipe import Recipe
 
 db_commands = Blueprint('db',__name__)
 
@@ -30,6 +31,28 @@ def seed_db():
     ]
     
     db.session.add_all(users)
+    
+    recipes = [ 
+            Recipe (
+                title = 'Recipe 1',
+                description = 'Recipe 1 description',
+                ingredients = 'Ingredients 1',
+                cooking_time = '45',
+                difficulty_rating = '2',
+                user=users[0],
+            ),
+            Recipe (
+                title = 'Recipe 2',
+                description = 'Recipe 2 description',
+                ingredients = 'Ingredients 2',
+                cooking_time = '20',
+                difficulty_rating = '3',
+                user=users[0],
+            ),
+        ]
+    
+    db.session.add_all(recipes)
+    
     db.session.commit()
     
     print("Tables seeded")

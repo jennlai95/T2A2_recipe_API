@@ -8,7 +8,7 @@ class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     description = db.Column(db.Text)
-    ingredient = db.Column(db.Text)
+    ingredients = db.Column(db.Text)
     cooking_time = db.Column(db.Integer) 
     difficulty_rating = db.Column(db.Integer)
     
@@ -17,7 +17,7 @@ class Recipe(db.Model):
     user = db.relationship('User', back_populates='recipes')
     
 
-class RecipeSchema(ma.schema):
+class RecipeSchema(ma.Schema):
     user = fields.Nested('UserSchema', only=['name','email'])
     
     class Meta:
