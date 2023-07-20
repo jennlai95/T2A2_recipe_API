@@ -49,6 +49,15 @@ def seed_db():
                 difficulty_rating = '3',
                 user=users[0],
             ),
+            
+             Recipe (
+                title = 'Recipe 2',
+                description = 'Recipe 2 description',
+                ingredients = 'Ingredients 2',
+                cooking_time = '20',
+                difficulty_rating = '3',
+                user=users[1],
+            ),
         ]
     
     db.session.add_all(recipes)

@@ -21,7 +21,7 @@ class RecipeSchema(ma.Schema):
     user = fields.Nested('UserSchema', only=['name','email'])
     
     class Meta:
-        fields = ('id','title','description','ingredients','cooking_time','difficulty_rating')
+        fields = ('id','title','description','ingredients','cooking_time','difficulty_rating','user_id')
         ordered = True
 
 recipe_schema = RecipeSchema()
