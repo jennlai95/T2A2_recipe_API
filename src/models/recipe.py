@@ -12,16 +12,17 @@ class Recipe(db.Model):
     cooking_time = db.Column(db.Integer) 
     difficulty_rating = db.Column(db.Integer)
     
+    #import user id relation/foreign key
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    
     user = db.relationship('User', back_populates='recipes')
     
 
+#create recipe schema
 class RecipeSchema(ma.Schema):
     user = fields.Nested('UserSchema', only=['name','email'])
     
     class Meta:
-        fields = ('id','title','description','ingredients','cooking_time','difficulty_rating','user_id')
+        fields = ('id','title','description','ingredients','cooking_time','difficulty_rating','user')
         ordered = True
 
 recipe_schema = RecipeSchema()
