@@ -2,6 +2,8 @@ from flask import Blueprint
 from init import db, bcrypt
 from models.user import User 
 from models.recipe import Recipe
+from models.review import Review
+from datetime import timedelta, date 
 
 db_commands = Blueprint('db',__name__)
 
@@ -32,6 +34,7 @@ def seed_db():
     
     db.session.add_all(users)
     
+    #create recipes to seed in recipes_bp
     recipes = [ 
             Recipe (
                 title = 'Recipe 1',
@@ -51,16 +54,39 @@ def seed_db():
             ),
             
              Recipe (
-                title = 'Recipe 2',
-                description = 'Recipe 2 description',
-                ingredients = 'Ingredients 2',
-                cooking_time = '20',
-                difficulty_rating = '3',
+                title = 'Recipe 3',
+                description = 'Recipe 3 description',
+                ingredients = 'Ingredients 123',
+                cooking_time = '30',
+                difficulty_rating = '5',
                 user=users[1],
             ),
         ]
     
     db.session.add_all(recipes)
+     
+    #Seed table with reviews
+    reviews = [ 
+            Review (
+                title = 'Recipe 1 review',
+                comment = 'lorem ipsum',
+                date=date.today(),
+                user_rating = '4',
+                user=users[0],
+                recipe=recipes[1],
+            ),
+            Review (
+                title = 'Recipe 2 review',
+                comment = 'lorem ipsum',
+                date=date.today(),
+                user_rating = '4',
+                user=users[0],
+                recipe=recipes[2],
+            ),
+        ]
+    
+    db.session.add_all(reviews)
+   
     
     db.session.commit()
     

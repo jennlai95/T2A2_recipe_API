@@ -12,14 +12,15 @@ class Review(db.Model):
     date = db.Column(db.Date) # Date created
     user_rating = db.Column(db.Integer)
     
+    # User relationship
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    #define relationship to user
-    user = db.relationship('User', back_populates='review')
-    
-    recipes = db.relationship('Recipe', back_populates='review')
+    user = db.relationship('User', back_populates='reviews') 
+
+    # Recipe relationship
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'), nullable=False)
+    recipe = db.relationship('Recipe', back_populates='reviews')
     
-class CommentSchema(ma.Schema):
+class ReviewSchema(ma.Schema):
     user = fields.Nested('UserSchema', only=['name','email'])
     recipe = fields.Nested('RecipeSchema', only=['title'])
     
@@ -27,5 +28,5 @@ class CommentSchema(ma.Schema):
         fields = ('id','title','comment','date','user_rating','user','recipe')
         ordered = True
 
-comment_schema = CommentSchema()
-comments_schema = CommentSchema(many=true)
+review_schema = ReviewSchema()
+reviews_schema = ReviewSchema(many=True)

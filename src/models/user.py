@@ -12,6 +12,7 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     
     recipes = db.relationship('Recipe', back_populates='user')
+    reviews = db.relationship('Review', back_populates='user')
 
 #create User Schema
 class UserSchema(ma.Schema):
