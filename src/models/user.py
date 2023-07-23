@@ -11,8 +11,10 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     
+    
     recipes = db.relationship('Recipe', back_populates='user')
     reviews = db.relationship('Review', back_populates='user')
+    saved_recipes = db.relationship('SavedRecipe', back_populates='user')
 
 #create User Schema
 class UserSchema(ma.Schema):

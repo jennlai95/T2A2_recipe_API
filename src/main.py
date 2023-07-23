@@ -5,6 +5,7 @@ from controllers.cli_controller import db_commands
 from controllers.auth_controller import auth_bp
 from controllers.recipe_controller import recipes_bp
 from controllers.review_controller import reviews_bp
+from controllers.saved_recipe_controller import saved_recipes_bp
 from datetime import timedelta
 
 def create_app():
@@ -25,5 +26,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(recipes_bp)
     app.register_blueprint(reviews_bp)
+    app.register_blueprint(saved_recipes_bp)
+  
     
     return app

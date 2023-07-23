@@ -3,6 +3,7 @@ from init import db, bcrypt
 from models.user import User 
 from models.recipe import Recipe
 from models.review import Review
+from models.saved_recipe import SavedRecipe
 from datetime import timedelta, date 
 
 db_commands = Blueprint('db',__name__)

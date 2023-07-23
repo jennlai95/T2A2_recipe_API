@@ -16,7 +16,9 @@ class Recipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='recipes')
     
-    reviews = db.relationship('Review', back_populates='recipe')    
+    reviews = db.relationship('Review', back_populates='recipe')  
+    
+    saved_recipes = db.relationship('SavedRecipe',back_populates='recipes')  
 
 #create recipe schema
 class RecipeSchema(ma.Schema):

@@ -3,7 +3,6 @@ from init import db
 from models.review import Review, review_schema, reviews_schema
 from datetime import date 
 
-
 #create reviews route 
 reviews_bp = Blueprint('reviews',__name__, url_prefix='/reviews')
 
