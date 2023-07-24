@@ -7,13 +7,13 @@ saved_recipes_bp = Blueprint('saved_recipes',__name__, url_prefix='/saved_recipe
 
 @saved_recipes_bp.route('/')
 def get_all_saved_recipes():
-    stmt = db.select(Saved_Recipe).order_by(Recipe.desc())
+    stmt = db.select(SavedRecipe).order_by(SavedRecipe.date.desc())
     recipes = db.session.scalars(stmt)
     return recipes_schema.dump(saved_recipes)
 
 #Get one recipe 
 @saved_recipes_bp.route('/<int:id>')
 def get_one_saved_recipe():
-    stmt = db.select(Saved_Recipe).filter_by(id=id)
+    stmt = db.select(SavedRecipe).filter_by(id=id)
     recipes = db.session.scalars(stmt)
     return recipe_schema.dump(saved_recipe)

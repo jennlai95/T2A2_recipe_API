@@ -11,6 +11,7 @@ class SavedRecipe(db.Model):
     # Recipe relationship
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'), nullable=False)
     recipes = db.relationship('Recipe', back_populates='saved_recipes')
+    
     #import user id relation/foreign key
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='saved_recipes')
@@ -19,7 +20,6 @@ class SavedRecipe(db.Model):
 #create To_Try list Schema
 class SavedRecipeSchema(ma.Schema):
     user = fields.List(fields.Nested('SavedRecipeSchema',exclude=['user']))
-    
     class Meta:
         fields = ('id','date','recipes','user')
 
