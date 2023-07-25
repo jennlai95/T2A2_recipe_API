@@ -58,4 +58,22 @@ def delete_one_recipe(id):
         return {'message': f'Recipe {recipe.title} deleted successfully'}
     else: 
         return {'error': f'Recipe not found with id {id}'}, 404
-    
+
+#create put and patch method, editing method
+@recipes_bp.route('/<int:id>', methods = ['PUT','PATCH'])
+@jwt_required()   
+def update_one_recipe(id):
+    body_data = request.get_json()
+    stmt = db.select(Recipe).filter_by(id=id)
+    recipe = db.session.scalar(stmt)
+    if recipe:
+        recipe.title = body_data.get('title') or recipe.title 
+        recipe.description = body_data.get('description') or recipe.description
+        recipe.ingredients = body_data.get('ingredients') or recipe.ingredients
+        recipe.cooking_time = body_data.get('cooking_time') or recipe.cooking_time
+        recipe.difficulty_rating = body_data.get('difficulty_rating') or recipe.difficulty_rating
+        db.session.commit()
+        return recipe_schema.dump(recipe)
+    else:
+        return {'error': f'Recipe not found with id {id}'}, 404
+        
