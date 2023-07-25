@@ -11,14 +11,15 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     
-    
+    #Establish relation ('Model name', backpopulates='field')
     recipes = db.relationship('Recipe', back_populates='user')
-    reviews = db.relationship('Review', back_populates='user')
-    saved_recipes = db.relationship('SavedRecipe', back_populates='user')
+    reviews = db.relationship('Review', back_populates='user', cascade ='all,delete')
+    saved_recipes = db.relationship('SavedRecipe', back_populates='user', cascade ='all,delete')
 
 #create User Schema
 class UserSchema(ma.Schema):
     recipes = fields.List(fields.Nested('RecipeSchema',exclude=['user']))
+    reviews = fields.List(fields.Nested('ReviewSchema',exclude=['user']))
     class Meta:
         fields = ('id','name','email','password','is_admin')
         

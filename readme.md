@@ -37,6 +37,15 @@ make sure to login
 on postman grab login token  and add to authorisation on post card, add bearer token.  paste the token
 once done you can hit send to post/create a new recipe.
 
+To Post a review will need to login, POST: localhost:8080/reviews
+example: 
+{
+    "title": "Recipe 3 review update",
+    "user_rating": "2",
+    "comment": "recipe comment",
+    "recipe_id": "2"
+}
+
 
 # R6 An ERD for your app
 
