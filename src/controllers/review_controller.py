@@ -48,35 +48,33 @@ def create_review():
     #r respond to the client
     return review_schema.dump(review), 201
 
-# #Delete method for recipe, requires recipe id to delete and user loging
+# Delete route for review, requires review id to delete and user login
 
-# @recipes_bp.route('/<int:id>', methods = ['DELETE'])
-# @jwt_required()
-# def delete_one_recipe(id):
-#     stmt = db.select(Recipe).filter_by(id=id)
-#     recipe = db.session.scalar(stmt)
-#     if recipe: 
-#         db.session.delete(recipe)
-#         db.session.commit()
-#         return {'message': f'Recipe {recipe.title} deleted successfully'}
-#     else: 
-#         return {'error': f'Recipe not found with id {id}'}, 404
+@reviews_bp.route('/<int:id>', methods = ['DELETE'])
+@jwt_required()
+def delete_one_review(id):
+    stmt = db.select(Review).filter_by(id=id)
+    recipe = db.session.scalar(stmt)
+    if recipe: 
+        db.session.delete(review)
+        db.session.commit()
+        return {'message': f'Review {review.title} deleted successfully'}
+    else: 
+        return {'error': f'Review not found with id {id}'}, 404
 
-# #create put and patch method, editing method
-# @recipes_bp.route('/<int:id>', methods = ['PUT','PATCH'])
-# @jwt_required()   
-# def update_one_recipe(id):
-#     body_data = request.get_json()
-#     stmt = db.select(Recipe).filter_by(id=id)
-#     recipe = db.session.scalar(stmt)
-#     if recipe:
-#         recipe.title = body_data.get('title') or recipe.title 
-#         recipe.description = body_data.get('description') or recipe.description
-#         recipe.ingredients = body_data.get('ingredients') or recipe.ingredients
-#         recipe.cooking_time = body_data.get('cooking_time') or recipe.cooking_time
-#         recipe.difficulty_rating = body_data.get('difficulty_rating') or recipe.difficulty_rating
-#         db.session.commit()
-#         return recipe_schema.dump(recipe)
-#     else:
-#         return {'error': f'Recipe not found with id {id}'}, 404
+#create put and patch route, editing method
+@reviews_bp.route('/<int:id>', methods = ['PUT','PATCH'])
+@jwt_required()   
+def update_one_review(id):
+    body_data = request.get_json()
+    stmt = db.select(Review).filter_by(id=id)
+    recipe = db.session.scalar(stmt)
+    if review:
+        review.title = body_data.get('title') or review.title 
+        review.comment = body_data.get('comment') or recipe.comment
+        review.user_rating = body_data.get('user_rating') or recipe.user_rating
+        db.session.commit()
+        return review_schema.dump(review)
+    else:
+        return {'error': f'Review not found with id {id}'}, 404
         
