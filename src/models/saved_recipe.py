@@ -19,7 +19,7 @@ class SavedRecipe(db.Model):
     
 #create To_Try list Schema
 class SavedRecipeSchema(ma.Schema):
-    user = fields.Nested('SavedRecipeSchema',exclude=['user'])
+    user = fields.Nested('SavedRecipeSchema', only = ['name','email'])
     recipes = fields.Nested ('RecipeSchema', only = ['title'])
     class Meta:
         fields = ('id','date','recipes','user')

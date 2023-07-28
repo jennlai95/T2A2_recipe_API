@@ -1,10 +1,13 @@
 from flask import Blueprint, request 
 from init import db
 from models.recipe import Recipe, recipe_schema, recipes_schema
+from models.review import Review, review_schema, reviews_schema
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from controllers.review_controller import reviews_bp
 
 #create recipes route 
 recipes_bp = Blueprint('recipes',__name__, url_prefix='/recipes')
+recipes_bp.register_blueprint(reviews_bp,url_prefix ='<int:recipe_id>/reviews')
 
 @recipes_bp.route('/')
 def get_all_recipes():
@@ -76,4 +79,3 @@ def update_one_recipe(id):
         return recipe_schema.dump(recipe)
     else:
         return {'error': f'Recipe not found with id {id}'}, 404
-        
