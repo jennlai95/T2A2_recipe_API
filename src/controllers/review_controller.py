@@ -10,22 +10,22 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 reviews_bp = Blueprint('reviews',__name__, url_prefix='/reviews')
 
 
-@reviews_bp.route('/')
-def get_all_review():
-    stmt = db.select(Review).order_by(Review.date.desc())
-    reviews = db.session.scalars(stmt)
-    return reviews_schema.dump(reviews)
+# @reviews_bp.route('/')
+# def get_all_review():
+#     stmt = db.select(Review).order_by(Review.date.desc())
+#     reviews = db.session.scalars(stmt)
+#     return reviews_schema.dump(reviews)
 
 
-#Get one review and return error if review id doesn't exist
-@reviews_bp.route('/<int:id>')
-def get_one_review(id):
-    stmt = db.select(Recipe).filter_by(id=id)
-    review = db.session.scalar(stmt)
-    if review:
-       return review_schema.dump(review)
-    else: 
-       return {'error': f'Review not found with id {id}'}, 404 
+# #Get one review and return error if review id doesn't exist
+# @reviews_bp.route('/<int:id>')
+# def get_one_review(id):
+#     stmt = db.select(Recipe).filter_by(id=id)
+#     review = db.session.scalar(stmt)
+#     if review:
+#        return review_schema.dump(review)
+#     else: 
+#        return {'error': f'Review not found with id {id}'}, 404 
 
 # recipes/recipe_id/reviews - POST 
 # Posting reviews under recipe id  

@@ -7,6 +7,7 @@ from controllers.recipe_controller import recipes_bp
 from controllers.review_controller import reviews_bp
 from controllers.saved_recipe_controller import saved_recipes_bp
 from datetime import timedelta
+from marshmallow.exceptions import ValidationError
 
 def create_app():
     app = Flask(__name__)
@@ -16,6 +17,10 @@ def create_app():
     
     app.config["SQLALCHEMY_DATABASE_URI"]=os.environ.get("DATABASE_URL")
     app.config["JWT_SECRET_KEY"]=os.environ.get("JWT_SECRET_KEY")
+    
+    @app.errorhandler(ValidationError)
+    def validation_error(err):
+        return {'error': err.messages}, 400
     
     db.init_app(app)
     ma.init_app(app)
