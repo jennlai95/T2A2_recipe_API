@@ -4,6 +4,8 @@ from models.recipe import Recipe, recipe_schema, recipes_schema
 from models.review import Review, review_schema, reviews_schema
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from controllers.review_controller import reviews_bp
+from psycopg2 import errorcodes
+from sqlalchemy.exc import IntegrityError
 
 #create recipes route 
 recipes_bp = Blueprint('recipes',__name__, url_prefix='/recipes')
@@ -30,23 +32,26 @@ def get_one_recipe(id):
 @recipes_bp.route('/', methods=['POST'])
 @jwt_required()
 def create_recipe():
-    body_data = request.get_json()
-    #create a new Recipe model instance 
-    recipe = Recipe(
-        title = body_data.get('title'),
-        description = body_data.get('description'),
-        ingredients = body_data.get('ingredients'),
-        cooking_time = body_data.get('cooking_time'),
-        difficulty_rating = body_data.get('difficulty_rating'),
-        user_id = get_jwt_identity()
-    )
-    
-    # Add the recipe to the session
-    db.session.add(recipe)
-    #Commit 
-    db.session.commit()
-    #r respond to the client
-    return recipe_schema.dump(recipe), 201
+    try: 
+        body_data = request.get_json()
+        #create a new Recipe model instance 
+        recipe = Recipe(
+            title = body_data.get('title'),
+            description = body_data.get('description'),
+            ingredients = body_data.get('ingredients'),
+            cooking_time = body_data.get('cooking_time'),
+            difficulty_rating = body_data.get('difficulty_rating'),
+            user_id = get_jwt_identity()
+        )
+        # Add the recipe to the session
+        db.session.add(recipe)
+        #Commit 
+        db.session.commit()
+        #return respond to the client
+        return recipe_schema.dump(recipe), 201
+    except IntegrityError as err:
+        if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
+            return {'error': f'The {err.orig.diag.column_name} is required'}, 409
 
 #Delete method for recipe, requires recipe id to delete and user loging
 

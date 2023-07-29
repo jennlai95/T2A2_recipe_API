@@ -7,7 +7,7 @@ class Review(db.Model):
     __tablename__ = "reviews"
     
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
+    title = db.Column(db.String(100), nullable=False)
     comment = db.Column(db.Text)
     date = db.Column(db.Date) # Date created
     user_rating = db.Column(db.Integer)

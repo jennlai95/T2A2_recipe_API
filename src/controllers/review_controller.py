@@ -11,25 +11,26 @@ reviews_bp = Blueprint('reviews',__name__, url_prefix='/reviews')
 
 
 # @reviews_bp.route('/')
-# def get_all_review():
+# def get_all_reviews():
 #     stmt = db.select(Review).order_by(Review.date.desc())
 #     reviews = db.session.scalars(stmt)
 #     return reviews_schema.dump(reviews)
 
 
-# #Get one review and return error if review id doesn't exist
-# @reviews_bp.route('/<int:id>')
-# def get_one_review(id):
-#     stmt = db.select(Recipe).filter_by(id=id)
-#     review = db.session.scalar(stmt)
-#     if review:
-#        return review_schema.dump(review)
-#     else: 
-#        return {'error': f'Review not found with id {id}'}, 404 
+#Get  review for recipe and return error if recipe id doesn't exist
+@reviews_bp.route('/')
+def get_all_review(recipe_id):
+    stmt = db.select(Recipe).filter_by(id=recipe_id)
+    review = db.session.scalar(stmt)
+    if review:
+       return review_schema.dump(review)
+    else: 
+       return {'error': f'Review not found with id {id}'}, 404 
 
 # recipes/recipe_id/reviews - POST 
 # Posting reviews under recipe id  
 #Create post method for review
+
 @reviews_bp.route('/', methods = ['POST'])
 @jwt_required()
 def create_review(recipe_id):
@@ -50,31 +51,10 @@ def create_review(recipe_id):
         db.session.add(review)
         #Commit 
         db.session.commit()
-        #r respond to the client
+        #return respond to the client
         return review_schema.dump(review), 201
     else: 
         return {'error': f'Recipe not found with id {id}'}, 404
-
-# @reviews_bp.route('/', methods=['POST'])
-# @jwt_required()
-# def create_review():
-#     body_data = request.get_json()
-#     #create a new Review model instance 
-#     review = Review(
-#         title = body_data.get('title'),
-#         comment = body_data.get('comment'),
-#         date  = date.today(),
-#         user_rating = body_data.get('user_rating'),
-#         user_id = get_jwt_identity(),
-#         recipe_id = body_data.get('recipe_id')
-#     )
-    
-#     # Add the review to the session
-#     db.session.add(review)
-#     #Commit 
-#     db.session.commit()
-#     #r respond to the client
-#     return review_schema.dump(review), 201
 
 
 # Delete route for review, requires review id to delete and user login

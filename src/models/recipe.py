@@ -3,6 +3,7 @@ from marshmallow import fields, validates
 from marshmallow.validate import Length, And, Regexp, OneOf
 from marshmallow.exceptions import ValidationError
 
+#field validation for recipe schema
 VALID_DIFFICULTY_RATING = ('1','2','3','4','5')
 
 #Create recipes model
@@ -10,9 +11,9 @@ class Recipe(db.Model):
     __tablename__ = "recipes"
     
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
+    title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    ingredients = db.Column(db.Text)
+    ingredients = db.Column(db.Text, nullable = False)
     cooking_time = db.Column(db.Integer) 
     difficulty_rating = db.Column(db.Integer)
     

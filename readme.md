@@ -16,27 +16,33 @@ This project will use PostgreSQL.
 
 # R5 Document all endpoints for your API
 -
-Register as user
+USER model endpoints: 
+
+- Register as user:
 POST: localhost:8080/auth/register
 
-LOGIN
+- LOGIN as user :
 POST: localhost:8080/auth/login
 
-GET recipes
+Recipes endpoint:
+- GET recipes
 GET: localhost:8080/recipes
 
-To get individual recipes via recipe
+- To get individual recipes via recipe
 GET: localhost:8080/recipes/(id)
 e.g 
 localhost:8080/recipes/5
 for recipe id 5
 
+- POST/CREATE new recipes
 only logged in users can post and create recipe
 POST: localhost:8080/recipes
 make sure to login 
 on postman grab login token  and add to authorisation on post card, add bearer token.  paste the token
 once done you can hit send to post/create a new recipe.
 
+
+REVIEWS model endpoint:
 To Post a review will need to login, POST: localhost:8080/reviews
 example: 
 {

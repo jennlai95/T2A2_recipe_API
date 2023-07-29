@@ -1,5 +1,6 @@
 from init import db, ma 
-from marshmallow import fields 
+from marshmallow import fields, validate
+
 
 # create saved recipes to try list model
 class SavedRecipe(db.Model):
@@ -19,10 +20,10 @@ class SavedRecipe(db.Model):
     
 #create To_Try list Schema
 class SavedRecipeSchema(ma.Schema):
-    user = fields.Nested('SavedRecipeSchema', only = ['name','email'])
-    recipes = fields.Nested ('RecipeSchema', only = ['title'])
+    recipes = fields.Nested ('RecipeSchema', only = ['id','title'])
+    user = fields.Nested ('UserSchema', only = ['name','email'])
     class Meta:
-        fields = ('id','date','recipes','user')
+        fields = ('id','date','recipe_id','user')
 
 saved_recipe_schema = SavedRecipeSchema()
 saved_recipes_schema = SavedRecipeSchema(many=True)

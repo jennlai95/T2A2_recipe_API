@@ -20,6 +20,8 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     recipes = fields.List(fields.Nested('RecipeSchema',exclude=['user']))
     reviews = fields.List(fields.Nested('ReviewSchema',exclude=['user']))
+    saved_recipes = fields.List(fields.Nested('SavedRecipeSchema'))
+    
     class Meta:
         fields = ('id','name','email','password','is_admin')
         
