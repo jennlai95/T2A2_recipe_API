@@ -100,7 +100,9 @@ more server or hardware resources than other databases.
 
 # R4 Identify and discuss the key functionalities and benefits of an ORM
 
-- 
+ORM is Object Relational Mapping and is used to interact between application and a datbase. This lets users to interact with the database by using queries rather than in SQL. It connects to database server, generates query, fetches data and serialises password. 
+
+Some of the benefits is that ORM can be used to connect to the application with the SQL code without having to rewrite the code.It also means that users do not need any SQL knowledge to use the ORM. ORM is also easier and more cost-effective to maintain over time as it automates object-to-table and table-to-object conversion. 
 
 # R5 Document all endpoints for your API
 Each models have CRUD endpoints (Create, Read, Update and delete endpoints). The request needs to be submitted in JSON. 
@@ -137,12 +139,22 @@ GET: localhost:8080/recipes/(id)
 
 - POST/CREATE new recipes
 required: only logged in users can post and create recipe
+ROUTE: ('/recipes', methods = ['POST'])
+e.g.
 POST: localhost:8080/recipes
-make sure to login 
+- make sure to login 
 on postman grab login token  and add to authorisation on post card, add bearer token.  paste the token
 once done you can hit send to post/create a new recipe.
 
 ![Alt text](doc/post_recipe.png)
+
+- DELETE recipes
+required: user login, needs to be an admin to be able to delete and recipe id
+ROUTE: ('/recipes', methods = ['DELETE'])
+
+- UPDATE recipes
+required: user login, needs to be original user/owner of recipe to update and recipe id
+ROUTE: ('/recipes', methods = ['PUT', 'PATCH'])
 
 
 ## REVIEWS  endpoint:
@@ -157,6 +169,15 @@ example:
     "comment": "recipe comment",
     "recipe_id": "2"
 }
+
+![Alt text](doc/POST_rview.png)
+
+- GET reviews, get all reviews available under one recipe
+ROUTE: /recipes/recipe_id/reviews/
+METHOD: GET
+required: user login, recipe id to input into the route
+
+![Alt text](doc/get_reviews.png)
 
 - UPDATE reviews
 ROUTE: PUT OR PATCH

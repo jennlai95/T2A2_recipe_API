@@ -105,7 +105,7 @@ def seed_db():
     
     db.session.add_all(reviews)
     
-    #Seed table with saved recipe for user 0
+    #Seed table with saved recipe for user
     saved_recipes = [
                 SavedRecipe (
                     date=date.today(),

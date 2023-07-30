@@ -26,7 +26,7 @@ def authorise_as_admin(fn):
     
     return wrapper
 #create route to retrieve all recipes 
-@recipes_bp.route('/', methods = ['GET'])
+@recipes_bp.route('/<int:recipe_id>', methods = ['GET'])
 def get_all_recipes():
     stmt = db.select(Recipe).order_by(Recipe.difficulty_rating.desc())
     recipes = db.session.scalars(stmt)

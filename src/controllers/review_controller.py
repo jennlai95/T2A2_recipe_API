@@ -20,20 +20,18 @@ def authorise_as_admin(fn):
         if user.is_admin:
             return fn(*args, **kwargs)
         else:
-            return {'error': 'Not authorised to perform delete'}, 403
-        
+            return {'error': 'Not authorised to perform delete'}, 403     
     return wrapper
 
-#Get  review for recipe and return error if recipe id doesn't exist
+#GET all reviews for a recipe - needs recipe id
 @reviews_bp.route('/')
 def get_all_review(recipe_id):
-    stmt = db.select(Recipe).filter_by(id=recipe_id)
-    review = db.session.scalar(stmt)
+    # filter all review by recipe id and give all reviews under the recipe id
+    review = db.session.query(Review).filter_by(recipe_id=recipe_id)
     if review:
-       return review_schema.dump(review)
+       return reviews_schema.dump(review)
     else: 
        return {'error': f'Review not found with id {id}'}, 404 
-   
 
 # recipes/recipe_id/reviews - POST 
 # Posting reviews under recipe id  
