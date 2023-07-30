@@ -109,13 +109,13 @@ USER model endpoints:
 ## AUTH_CONTROLLER endpoints:
 - Register as user
 HTTPS request verb: POST
-ROUTE ('/register', methods = 'POST')
+ROUTE ('auth/register', methods = 'POST')
 Example:POST: localhost:8080/auth/register
 - this allows someone to sign up and create a new account with their username, email and password
 - All the data is required and not nullable 
 
 - LOGIN as user :
-HTTPS request: POST
+HTTPS request: POST /auth/login
 Example =  POST: localhost:8080/auth/login
 - this allows user to login using their email and password
 - this returns a serialised JWT token used to authenticate other endpoints if successful 
@@ -125,7 +125,7 @@ Example =  POST: localhost:8080/auth/login
 ## Recipes endpoint:
 - GET recipes
 ROUTE ('/recipes', methods = ['GET'])
-GET: localhost:8080/recipes
+GET: /recipes e.g localhost:8080/recipes
 required: user login to retrieve the data and JWT token cannot be expired
 
 - To get individual recipes via recipe
@@ -147,7 +147,7 @@ once done you can hit send to post/create a new recipe.
 
 ## REVIEWS  endpoint:
 - To Post a review will need to login, 
-ROUTE: POST: localhost:8080/reviews
+ROUTE: POST: /reviews  e.g. localhost:8080/reviews
 required: user id, recipe id and user_rating is required for a review
 
 example: 
@@ -216,11 +216,30 @@ ROUTE: PUT or PATCH: /saved_recipes/id
 ![Alt text](doc/delete_saved_recipe.png)
 ![Alt text](doc/delete_saved_recipe_notowner.png)
 
+## Favourites list endpoints
+
+- POST
+ROUTE: /favourites  
+method: 'POST'
+REQUIRED: user id and recipe id are required
+- UPDATE
+ROUTE: /favourites/id
+method: 'PUT' OR 'PATCH', 
+REQUIRED: user id and recipe id are required
+- GET 
+ROUTE: /favourites  
+method: 'GET'
+REQUIRED: user id is required
+
+- DELETE
+ROUTE: /favourites/id
+method: 'DELETE'
+REQUIRED: user id and recipe id is required. only the owner of the list can delete a favourited recipe
+![Alt text](doc/delete_favourite.png)
 
 # R6 An ERD for your app
 
-
-
+![Alt text](doc/updated_ERD.png)
 
 # R7 Detail any third party services that your app will use
 
@@ -247,11 +266,12 @@ User table:
 - There is four relations as its used in all the tables. 
 - Recipe - one to many. One user can create many recipes but a recipe can only relate to one user.
 - Saved recipe list - one to many, one user can have one list with many recipes but the list can only have one user. 
-- 
+- favourites list - one to many, one user can have one list with many recipes but the list can only have one user. 
+- reviews - one to many. user can create many reviews but each review is linked to only one user
 
 Recipe table:
-- user 
-- reviews = this is a many to many relation. Recipes can have multiple reviews and similarly, reviews can be done for multiple recipes 
+- user - many to one. each recipe is linked to only one user but user can create many recipes
+- reviews = this is a one to many relation. Recipes can have multiple reviews and similarly, reviews can be done for multiple recipes but each review is linked to one recipe only. 
 
 Saved recipe table:
 - user - one to one relationship, 

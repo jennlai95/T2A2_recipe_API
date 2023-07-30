@@ -65,9 +65,9 @@ def delete_one_favourite(id):
             return {'error': 'Only the owner of the  list can edit'}, 403       
         db.session.delete(favourite)
         db.session.commit()
-        return {'message': f'favourite no. {favourite.id} deleted successfully'}
+        return {'message': f'favourite recipe no. {favourite.id} deleted successfully'}
     else: 
-        return {'error': f'favourite not found with id {id}'}, 404
+        return {'error': f'favourite recipe not found with id {id}'}, 404
 
 #create put and patch method, editing method
 @favourites_bp.route('/<int:id>', methods = ['PUT','PATCH'])

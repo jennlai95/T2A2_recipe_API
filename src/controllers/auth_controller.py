@@ -5,6 +5,7 @@ from flask_jwt_extended import create_access_token
 from sqlalchemy.exc import IntegrityError
 from psycopg2 import errorcodes
 from datetime import timedelta
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 auth_bp = Blueprint('auth',__name__, url_prefix='/auth')
 
@@ -43,3 +44,4 @@ def auth_login():
         return { 'email': user.email, 'token': token, 'is_admin': user.is_admin }
     else:
         return { 'error': 'Invalid email or password' }, 401
+    
