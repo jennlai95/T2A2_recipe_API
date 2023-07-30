@@ -5,9 +5,22 @@ from models.user import User
 from models.recipe import Recipe
 from datetime import date 
 from flask_jwt_extended import get_jwt_identity, jwt_required
+import functools
 
 #create reviews route 
 reviews_bp = Blueprint('reviews',__name__, url_prefix='/reviews')
+
+#create admin auth
+def authorise_as_admin(fn):
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        user_id = get_jwt_identity()
+        stmt = db.select(User).filter_by(id=user_id)
+        user = db.session.scalar(stmt)
+        if user.is_admin:
+            return fn(*args, **kwargs)
+        else:
+            return {'error': 'Not authorised to perform delete'}, 403
 
 
 #Get  review for recipe and return error if recipe id doesn't exist
@@ -54,10 +67,14 @@ def create_review(recipe_id):
 
 @reviews_bp.route('/<int:review_id>', methods = ['DELETE'])
 @jwt_required()
+@authorise_as_admin
 def delete_review(recipe_id,review_id):
     stmt = db.select(Review).filter_by(id=review_id)
-    recipe = db.session.scalar(stmt)
-    if recipe: 
+    review = db.session.scalar(stmt)
+    if review: 
+        # check user id as only original user can update saved list
+        if str (review.user_id) != get_jwt_identity():
+            return {'error': 'Only the owner of the review can delete'}, 403
         db.session.delete(review)
         db.session.commit()
         return {'message': f'Review {review.title} deleted successfully'}
@@ -69,12 +86,15 @@ def delete_review(recipe_id,review_id):
 @jwt_required()   
 def update_review(recipe_id,review_id):
     body_data = request.get_json()
-    stmt = db.select(Review).filter_by(id=review_idid)
-    recipe = db.session.scalar(stmt)
+    stmt = db.select(Review).filter_by(id=review_id)
+    review = db.session.scalar(stmt)
     if review:
+        # check user id as only original user can update saved list
+        if str (review.user_id) != get_jwt_identity():
+            return {'error': 'Only the owner of the review can edit'}, 403
         review.title = body_data.get('title') or review.title 
-        review.comment = body_data.get('comment') or recipe.comment
-        review.user_rating = body_data.get('user_rating') or recipe.user_rating
+        review.comment = body_data.get('comment') or review.comment
+        review.user_rating = body_data.get('user_rating') or review.user_rating
         db.session.commit()
         return review_schema.dump(review)
     else:

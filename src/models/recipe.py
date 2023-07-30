@@ -1,10 +1,10 @@
 from init import db, ma 
 from marshmallow import fields, validates
-from marshmallow.validate import Length, And, Regexp, OneOf
+from marshmallow.validate import Length, And, Regexp, OneOf, Range
 from marshmallow.exceptions import ValidationError
 
 #field validation for recipe schema
-VALID_DIFFICULTY_RATING = ('1','2','3','4','5')
+VALID_RATINGS = ("1","2","3","4","5")
 
 #Create recipes model
 class Recipe(db.Model):
@@ -36,18 +36,14 @@ class RecipeSchema(ma.Schema):
         Regexp('^[a-zA-Z0-9 ]+$', error='Only letters, spaces and numbers are allowed')
     ))
     
-    difficulty_rating = fields.Integer(validate=OneOf(VALID_DIFFICULTY_RATING))
-    
+    #validate difficulty rating so it is within 1-5 range
+    difficulty_rating = fields.Integer(validate=Range(min=1, max=5))
     
     @validates('difficulty_rating')
     def validate_difficulty_rating(self, value):
-        if value == VALID_DIFFICULTY_RATING[2]:
-            stmt = db.select(db.func.count()).select_from(Recipe).filter_by(status=VALID_DIFFICULTY_RATING[2])
-            count = db.session.scalar(stmt)
-            # if there is already a rating or not
-            if count > 0:
-                raise ValidationError('You already have a difficulty rating')
-    
+        if not 1 <= value <= 5:
+            raise ValidationError('Difficulty rating must be an integer between 1 and 5.')
+        
     class Meta:
         fields = ('id','title','description','ingredients','cooking_time','difficulty_rating','user')
         ordered = True

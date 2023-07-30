@@ -41,7 +41,7 @@ def create_saved_recipe():
             date  = date.today(),
             user_id = get_jwt_identity(),
             recipe_id = body_data.get('recipe_id'),
-            tried = body_data.get('tried'),
+            status = body_data.get('status'),
         )
         # Add the recipe to the session
         db.session.add(saved_recipe)
@@ -71,12 +71,15 @@ def delete_one_saved_recipe(id):
 @saved_recipes_bp.route('/<int:id>', methods = ['PUT','PATCH'])
 @jwt_required()   
 def update_one_saved_recipe(id):
-    body_data = request.get_json()
+    body_data = saved_recipe_schema.load(request.get_json())
     stmt = db.select(SavedRecipe).filter_by(id=id)
     saved_recipe = db.session.scalar(stmt)
     if saved_recipe:
+        # check user id as only original user can update saved list
+        if str (saved_recipe.user_id) != get_jwt_identity():
+            return {'error': 'Only the owner of the saved recipe list can edit'}, 403
         saved_recipe.recipe_id = body_data.get('recipe_id') or saved_recipe.recipe_id
-        saved_recipe.tried = body_data.get('tried') or saved_recipe.tried
+        saved_recipe.status = body_data.get('status') or saved_recipe.status
         saved_recipe.date = date.today()
 
         db.session.commit()

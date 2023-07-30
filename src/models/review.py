@@ -14,7 +14,7 @@ class Review(db.Model):
     title = db.Column(db.String(100), nullable=False)
     comment = db.Column(db.Text)
     date = db.Column(db.Date) # Date created
-    user_rating = db.Column(db.Integer)
+    user_rating = db.Column(db.Integer, nullable=False)
     
     # User relationship
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -33,6 +33,7 @@ class ReviewSchema(ma.Schema):
     
     @validates('user_rating')
     def validate_user_rating(self, value):
+        print(self)
         if value == VALID_USER_RATINGS[3]:
             stmt = db.select(db.func.count()).select_from(Review).filter_by(status=VALID_USER_RATINGS[3])
             count = db.session.scalar(stmt)

@@ -1,16 +1,30 @@
 from flask import Blueprint, request 
 from init import db
+from models.user import User
 from models.recipe import Recipe, recipe_schema, recipes_schema
 from models.review import Review, review_schema, reviews_schema
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from controllers.review_controller import reviews_bp
 from psycopg2 import errorcodes
 from sqlalchemy.exc import IntegrityError
+import functools
 
 #create recipes route 
 recipes_bp = Blueprint('recipes',__name__, url_prefix='/recipes')
 recipes_bp.register_blueprint(reviews_bp,url_prefix ='<int:recipe_id>/reviews')
 
+def authorise_as_admin(fn):
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        user_id = get_jwt_identity()
+        stmt = db.select(User).filter_by(id=user_id)
+        user = db.session.scalar(stmt)
+        if user.is_admin:
+            return fn(*args, **kwargs)
+        else:
+            return {'error': 'Not authorised to perform delete'}, 403
+    
+    return wrapper
 #create route to retrieve all recipes 
 @recipes_bp.route('/', methods = ['GET'])
 def get_all_recipes():
@@ -34,7 +48,7 @@ def get_one_recipe(id):
 @jwt_required()
 def create_recipe():
     try: 
-        body_data = request.get_json()
+        body_data = recipe_schema.load(request.get_json())
         #create a new Recipe model instance 
         recipe = Recipe(
             title = body_data.get('title'),
@@ -58,6 +72,7 @@ def create_recipe():
 
 @recipes_bp.route('/<int:id>', methods = ['DELETE'])
 @jwt_required()
+@authorise_as_admin
 def delete_one_recipe(id):
     stmt = db.select(Recipe).filter_by(id=id)
     recipe = db.session.scalar(stmt)
@@ -73,7 +88,7 @@ def delete_one_recipe(id):
 @recipes_bp.route('/<int:id>', methods = ['PUT','PATCH'])
 @jwt_required()   
 def update_one_recipe(id):
-    body_data = request.get_json()
+    body_data = recipe_schema.load(request.get_json(), partial=True)
     stmt = db.select(Recipe).filter_by(id=id)
     recipe = db.session.scalar(stmt)
     if recipe:
@@ -86,3 +101,4 @@ def update_one_recipe(id):
         return recipe_schema.dump(recipe)
     else:
         return {'error': f'Recipe not found with id {id}'}, 404
+    

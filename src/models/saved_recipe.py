@@ -31,10 +31,10 @@ class SavedRecipeSchema(ma.Schema):
     
     @validates('status')
     def validate_status(self, value):
-        if value == VALID_STATUSES[2]:
-            stmt = db.select(db.func.count()).select_from(SavedRecipe).filter_by(status=VALID_STATUSES[2])
+        if value == VALID_STATUSES[1]:
+            stmt = db.select(db.func.count()).select_from(SavedRecipe).filter_by(status=VALID_STATUSES[1])
             count = db.session.scalar(stmt)
-            # if there is an ongoing saved recipe or not
+            # if there is an ongoing status saved or not
             if count > 0:
                 raise ValidationError('You already have an ongoing status')
      
