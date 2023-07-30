@@ -1,6 +1,10 @@
 from init import db, ma 
-from marshmallow import fields 
+from marshmallow import fields, validates
+from marshmallow.validate import Length, And, Regexp, OneOf
+from marshmallow.exceptions import ValidationError
 
+#field validation for recipe schema
+VALID_USER_RATINGS = ('1','2','3','4','5')
 
 #Create reviews model
 class Review(db.Model):
@@ -24,8 +28,20 @@ class ReviewSchema(ma.Schema):
     user = fields.Nested('UserSchema', only=['name','email'])
     recipe = fields.Nested('RecipeSchema', only=['title'])
     
+    user_rating = fields.Integer(validate=OneOf(VALID_USER_RATINGS))
+    
+    
+    @validates('user_rating')
+    def validate_user_rating(self, value):
+        if value == VALID_USER_RATINGS[3]:
+            stmt = db.select(db.func.count()).select_from(Review).filter_by(status=VALID_USER_RATINGS[3])
+            count = db.session.scalar(stmt)
+            # if there is an ongoing review or not
+            if count > 0:
+                raise ValidationError('You already have an ongoing review rating')
+    
     class Meta:
-        fields = ('id','title','comment','date','user_rating','user','recipe')
+        fields = ('id','recipe','title','comment','date','user_rating','user')
         ordered = True
 
 review_schema = ReviewSchema()
