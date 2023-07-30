@@ -50,7 +50,9 @@ Create a .env file inside the src folder following the .envsample . for example:
 
 
 once done you can connect to database from psql with user name
+
     \c "database name" "username";
+    e.g
     \c recipe_mvc_db recipe_dev;
 
 or from flask venv
@@ -79,6 +81,22 @@ It needs to be solved as many times it is hard to keep track of each recipes and
 
 This project will use PostgreSQL. I have chosen to use this relational database as it is one of the most popular RDBMs with many resources available to support and use the database management. 
 
+PostgreSQL is a database commonly used in Flask applications. It is a relational database 
+management system that is also ACID compliant. 
+
+One of the pros of using PostgreSQL is that it is free and open source so it has a large active 
+community of developers. This means that it is regularly updated and with new database system 
+features. You can easily create new data, remove data or update the data on the 
+database. Its features include foreign keys for linking data in two tables. It is also an in-demand
+solution for web applications projects. It also has high performance and can support a 
+wide range of data and scales well with large quantity of data. 
+
+The con of this database is it is slow compared to another database. The installation is also 
+complicated for beginners and the extensive resources and documentation are also mostly in English
+which makes it less useful for non-English users. There is a learning curve to using PostgreSQL and even 
+installing it may be difficult to do without documentation or guidance. Another con is the extensive 
+memory usage because of the architecture of PostgreSQL. This means it requires
+more server or hardware resources than other databases.
 
 # R4 Identify and discuss the key functionalities and benefits of an ORM
 
@@ -108,23 +126,30 @@ Example =  POST: localhost:8080/auth/login
 - GET recipes
 ROUTE ('/recipes', methods = ['GET'])
 GET: localhost:8080/recipes
+required: user login to retrieve the data and JWT token cannot be expired
 
 - To get individual recipes via recipe
 GET: localhost:8080/recipes/(id)
-e.g 
-localhost:8080/recipes/5
-for recipe id 5
+
+    e.g 
+    localhost:8080/recipes/5
+    for recipe id 5
 
 - POST/CREATE new recipes
-only logged in users can post and create recipe
+required: only logged in users can post and create recipe
 POST: localhost:8080/recipes
 make sure to login 
 on postman grab login token  and add to authorisation on post card, add bearer token.  paste the token
 once done you can hit send to post/create a new recipe.
 
+![Alt text](doc/post_recipe.png)
+
 
 ## REVIEWS  endpoint:
-To Post a review will need to login, POST: localhost:8080/reviews
+- To Post a review will need to login, 
+ROUTE: POST: localhost:8080/reviews
+required: user id, recipe id and user_rating is required for a review
+
 example: 
 {
     "title": "Recipe 3 review update",
@@ -133,12 +158,33 @@ example:
     "recipe_id": "2"
 }
 
+- UPDATE reviews
+ROUTE: PUT OR PATCH
+/recipes/recipe_id/reviews/review_id
+required: needs to be original user to delete. requires review_id and user login
+
+![Alt text](doc/review_update.png)
+
+![Alt text](doc/rating_error.png)
+
+
+- DELETE reviews
+Route: DELETE /recipes/recipe_id/reviews/review_id
+required: authorisation as admin to delete
+if a regular user tried to delete
+![Alt text](doc/delete_review.png)
+
+admin can delete
+
+![Alt text](doc/delete_review_admin.png)
+
 ## Saved recipe endpoint: 
 
-POST CREATE recipe
+- POST CREATE recipe
 ROUTE: POST: (/saved_recipes)
 
-Required: recipe_id, user_id. user needs to be loggged in to save a recipe and to save a recipe you need the recipe id.
+Required: recipe_id, user_id is needed and needs to be posted in JSON
+user needs to be loggged in to save a recipe and to save a recipe you need the recipe id.
 Status is not required but if a status is inputted it needs to be "To Try" or "Tried", these are case sensitive
 IF any other status is put in it will return a validation error below:
 
@@ -150,9 +196,25 @@ IF any other status is put in it will return a validation error below:
     }
 }
 
-READ saved recipe list
+- READ saved recipe list
 ROUTE: GET: /saved_recipes
 Required: user login required to get the recipes
+example of list of recipes
+
+![GET saved recipe](/doc/getsavedrecipe.png)
+
+- PUT or PATCH saved recipe list
+ROUTE: PUT or PATCH: /saved_recipes/id
+
+![Patch](doc/PATCH_saved_recipe.png)
+
+- DELETE saved recipe
+- user can delete certain recipe from their saved recipe list. only the owner can remove recipe from their list
+- Required: user login
+- ROUTE: DELETE: /saved_recipes/id
+
+![Alt text](doc/delete_saved_recipe.png)
+![Alt text](doc/delete_saved_recipe_notowner.png)
 
 
 # R6 An ERD for your app
@@ -209,12 +271,12 @@ Tasks are managed on Trello : https://trello.com/b/XYz6FNaD/t2a2-recipe-tracker-
 yellow tasks are reminders , purple tasks are related to endpoint documentations
 All tasks are important and necessary but urgent tasks are prioritised by date 
 DAY 1
-![Alt text](trello_day1.png)
+![Alt text](./doc/trello_day1.png)
 
 DAY 3
-![Alt text](<Day 3.png>)
+![Alt text](</doc/Day 3.png>)
 
 Week 3
-![Alt text](image.png)
+![Alt text](/doc/image.png)
 
 

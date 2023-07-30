@@ -92,6 +92,8 @@ def update_one_recipe(id):
     stmt = db.select(Recipe).filter_by(id=id)
     recipe = db.session.scalar(stmt)
     if recipe:
+        if str (recipe.user_id) != get_jwt_identity():
+            return {'error': 'Only the owner of the recipe can edit'}, 403
         recipe.title = body_data.get('title') or recipe.title 
         recipe.description = body_data.get('description') or recipe.description
         recipe.ingredients = body_data.get('ingredients') or recipe.ingredients

@@ -61,6 +61,8 @@ def delete_one_saved_recipe(id):
     stmt = db.select(SavedRecipe).filter_by(id=id)
     saved_recipe = db.session.scalar(stmt)
     if saved_recipe: 
+        if str (saved_recipe.user_id) != get_jwt_identity():
+            return {'error': 'Only the owner of the saved recipe list can edit'}, 403       
         db.session.delete(saved_recipe)
         db.session.commit()
         return {'message': f'Saved recipe no. {saved_recipe.id} deleted successfully'}

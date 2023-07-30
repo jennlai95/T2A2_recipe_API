@@ -21,7 +21,8 @@ def authorise_as_admin(fn):
             return fn(*args, **kwargs)
         else:
             return {'error': 'Not authorised to perform delete'}, 403
-
+        
+    return wrapper
 
 #Get  review for recipe and return error if recipe id doesn't exist
 @reviews_bp.route('/')
@@ -32,6 +33,7 @@ def get_all_review(recipe_id):
        return review_schema.dump(review)
     else: 
        return {'error': f'Review not found with id {id}'}, 404 
+   
 
 # recipes/recipe_id/reviews - POST 
 # Posting reviews under recipe id  
@@ -43,7 +45,7 @@ def create_review(recipe_id):
     body_data = request.get_json()
     stmt = db.select(Recipe).filter_by(id=recipe_id) #select * from recipes where id = recipe_id
     recipe = db.session.scalar(stmt)
-    #create a new Review model instance 
+    #create a new Review instance if recipe exists
     if recipe: 
         review = Review(
             title = body_data.get('title'),
@@ -72,9 +74,6 @@ def delete_review(recipe_id,review_id):
     stmt = db.select(Review).filter_by(id=review_id)
     review = db.session.scalar(stmt)
     if review: 
-        # check user id as only original user can update saved list
-        if str (review.user_id) != get_jwt_identity():
-            return {'error': 'Only the owner of the review can delete'}, 403
         db.session.delete(review)
         db.session.commit()
         return {'message': f'Review {review.title} deleted successfully'}
