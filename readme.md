@@ -71,11 +71,14 @@ once done you can run this app on Postman to make requests
 
 This app is a RESTFUL recipe API. It allows users to save recipes to try or to browse for new recipes. This keeps tracks of all the recipes that users have tried or want to try and also reviews each recipes if they wanted to. The main point is to also be able to share this with others so the users can expand the type of recipes they try.
 
-This is a problem as there are sometimes many recipes to try but users are unable to keep track of which recipes they've tried or how they feel about the recipe once they've tried it
+This is a problem as there are sometimes many recipes to try but users are unable to keep track of which recipes they've tried or how they feel about the recipe once they've tried it. With this app, users can easily keep track of recipes they've tried or wish to try.
+
+The idea is to create a user friendly recipe API so users can easily share their recipes with others. By allowing reviews on the apps, it will also create a community of users who are willing to try new recipes and explore. 
 
 # R2 Why is it a problem that needs solving?
 
-It needs to be solved as many times it is hard to keep track of each recipes and ingredients as there are multiple. It also allows users to store the recipes in a database but by creating a RESTFUL API, even users who are not familiar with SQL can store and track their recipes to share with others.
+It needs to be solved users can find difficult to manage multiple recipes and ingredients. It also allows users to store the recipes in a database but by creating a RESTFUL API, even users who are not familiar with SQL can store and track their recipes to share with others.
+This API aims to store the recipe in a centralised database and organise it according to reviews, track saved recipe lists to try and bookmark their favourite recipes. This API will hopefully allow users to broaden their recipes to try and to enjoy a wider range of cuisines. 
 
 # R3 Why have you chosen this database system. What are the drawbacks compared to others?
 
@@ -274,13 +277,13 @@ SQLAlchemy - this is an ORM tool to translate Flask queries into SQL so we can u
 
 Flask JWT extended - this is a package that provides JWT (JSON Web Token) for flask applications. its used for authentication and acess control in the endpoints. It authenticates the users and when succesfully authenticated, it provides a serialised bearer token to protect endpoints
 
-Flask Marshmallow - this is a Flask extension that is popular and used for serialisation and deserialisation. It is a tool that converts data from database table into JSON format that can be returned 
+Flask Marshmallow - this is a Flask extension that is popular and used for serialisation and deserialisation. It is a tool that converts data from database table into JSON format that can be returned. This simplies data handling and responses. 
 
 Flask Bcrypt - this allows us to encrypt and hash the passwords and securely store and manage user passwords. this provides a layer of security as the password is not stored in database as inputted but are all encrypted
 
 Psycopg = Psycopg is the most popular PostgreSQL database adapter for the Python programming language. SQL queries are executed with the help of execute() method and command. 
 
-python-dotenv - Python-dotenv reads key-value pairs from a .env file and can set them as environment variables. This allowed us to create .env and .flaskenv system files
+python-dotenv - Python-dotenv reads key-value pairs from a .env file and can set them as environment variables. This allowed us to create .env and .flaskenv system files. This is usefulk in managing sensitive configuration information such as DATABASE_URI and JWT SECRET KEYS in this API. 
 
 These libraries are imported and installed in requirements.txt
 
@@ -296,26 +299,28 @@ There were five models created in this application:
 ## User model
 The primary key is id and referred to as user.id as a Foreign Key in other model. If the user is deleted it will cascade a deletion for reviews, saved recipe and favourite model
 
+There is a one to many relation for user and recipe model. A user can create many recipes.
 
 ## Recipe model 
 
-The primary key is id and is referred to as recipe.id as a Foreign key in other models. This model is related to all the other models
-
+The primary key is id and is referred to as recipe.id as a Foreign key in other models. This model is related to all the other models. 
+We have a one to many relationship with user. One user can create many recipes but each recipe can only relate to one user(owner)
+We have a one to many relationship with reviews model. Each recipe can have many reviews but each review is only for one recipe. Client has to review each recipe individually
 
 ## Reviews model
 
 The primary key is id. It uses two foreign keys constraints from: user model and recipe model. 
-Each review is directly tied to a recipe_id. Each review requires a user_rating. 
+Each review is directly tied to a recipe_id. Each review requires a user_rating and each review is for only one recipe.
 
 ## Saved recipe model
 
-The primary key is id. It uses two foreign keys constraints from: user model and recipe model. 
+The primary key is id. It uses two foreign keys constraints from: user model and recipe model (user_id and recipe_id)
 It has the option to add status to the list if you've tried the recipe or want to try the recipe
 
 ## Favourite model
 
 The primary key is id. It uses two foreign keys constraints from: user model and recipe model. 
-This is similar to saved recipe model but does not have any other independent body data and is simply a list of favourite recipe. It requires user id and recipe id as the Foreign Keys in the table. Date is saved on the day the recipes are added to the table. 
+This is similar to saved recipe model but does not have any other independent body data and is simply a list of favourite recipe. It requires user id and recipe id as the Foreign Keys in the table. Date is saved on the day the recipes are added to the table. If user or recipe is deleted it will also cascade through the favourite model. 
 
 
 

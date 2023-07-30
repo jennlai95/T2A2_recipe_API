@@ -21,12 +21,12 @@ class Recipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='recipes')
     
-    #create reviews relations
-    reviews = db.relationship('Review', back_populates='recipe')  
-    #create saved recipe relation 
-    saved_recipes = db.relationship('SavedRecipe',back_populates='recipes')  
-    #create favourites list relation
-    favourites = db.relationship('Favourite',back_populates='recipes')  
+    #create reviews relations and cascade
+    reviews = db.relationship('Review', back_populates='recipe', cascade ='all,delete') 
+    #create saved recipe relation and cascade
+    saved_recipes = db.relationship('SavedRecipe',back_populates='recipes', cascade ='all,delete')
+    #create favourites list relation and cascade
+    favourites = db.relationship('Favourite',back_populates='recipes', cascade ='all,delete')
 
 #create recipe schema
 class RecipeSchema(ma.Schema):
