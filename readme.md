@@ -69,13 +69,13 @@ once done you can run this app on Postman to make requests
 
 # R1 Identification of the problem you are trying to solve by building this particular app.
 
-This app is a recipe API. It allows users to save recipes to try or to browse for new recipes. This keeps tracks of all the recipes that users have tried or want to try and also reviews each recipes if they wanted to. The main point is to also be able to share this with others so the users can expand the type of recipes they try.
+This app is a RESTFUL recipe API. It allows users to save recipes to try or to browse for new recipes. This keeps tracks of all the recipes that users have tried or want to try and also reviews each recipes if they wanted to. The main point is to also be able to share this with others so the users can expand the type of recipes they try.
 
 This is a problem as there are sometimes many recipes to try but users are unable to keep track of which recipes they've tried or how they feel about the recipe once they've tried it
 
 # R2 Why is it a problem that needs solving?
 
-It needs to be solved as many times it is hard to keep track of each recipes and ingredients as there are multiple.
+It needs to be solved as many times it is hard to keep track of each recipes and ingredients as there are multiple. It also allows users to store the recipes in a database but by creating a RESTFUL API, even users who are not familiar with SQL can store and track their recipes to share with others.
 
 # R3 Why have you chosen this database system. What are the drawbacks compared to others?
 
@@ -96,7 +96,7 @@ complicated for beginners and the extensive resources and documentation are also
 which makes it less useful for non-English users. There is a learning curve to using PostgreSQL and even 
 installing it may be difficult to do without documentation or guidance. Another con is the extensive 
 memory usage because of the architecture of PostgreSQL. This means it requires
-more server or hardware resources than other databases.
+more server or hardware resources than other databases. However, with this application the data used is not extensive so this drawback is not severe. 
 
 # R4 Identify and discuss the key functionalities and benefits of an ORM
 
@@ -105,7 +105,8 @@ ORM is Object Relational Mapping and is used to interact between application and
 Some of the benefits is that ORM can be used to connect to the application with the SQL code without having to rewrite the code.It also means that users do not need any SQL knowledge to use the ORM. ORM is also easier and more cost-effective to maintain over time as it automates object-to-table and table-to-object conversion. 
 
 # R5 Document all endpoints for your API
-Each models have CRUD endpoints (Create, Read, Update and delete endpoints). The request needs to be submitted in JSON. 
+Each models have CRUD endpoints (Create, Read, Update and delete endpoints). For any body data request, it needs to be submitted in JSON. 
+
 USER model endpoints: 
 
 ## AUTH_CONTROLLER endpoints:
@@ -120,7 +121,7 @@ Example:POST: localhost:8080/auth/register
 HTTPS request: POST /auth/login
 Example =  POST: localhost:8080/auth/login
 - this allows user to login using their email and password
-- this returns a serialised JWT token used to authenticate other endpoints if successful 
+- this returns a serialised JWT token used to authenticate other endpoints if successful, this is then used to authorise as bearer tokens for all other endpoints 
 - Error 401 will return if email or password is invalid during login
 
 
@@ -128,7 +129,7 @@ Example =  POST: localhost:8080/auth/login
 - GET recipes
 ROUTE ('/recipes', methods = ['GET'])
 GET: /recipes e.g localhost:8080/recipes
-required: user login to retrieve the data and JWT token cannot be expired
+required: user login authorisation to retrieve the data and JWT token cannot be expired
 
 - To get individual recipes via recipe
 GET: localhost:8080/recipes/(id)
@@ -266,18 +267,50 @@ REQUIRED: user id and recipe id is required. only the owner of the list can dele
 
 This API project will be done in python. The third party services used is as follows:
 
-SQLAlchemy
-Flask from flask we are also importing JWT extended, Bcrypt
-Marshmallow
-Bcrypt 
-Psycopg 
-python-dotenv 
+SQLAlchemy - this is an ORM tool to translate Flask queries into SQL so we can use the PostgreSQL database and exucute the CRUD functions
+
+Flask JWT extended - this is a package that provides JWT (JSON Web Token) for flask applications. its used for authentication and acess control in the endpoints. It authenticates the users and when succesfully authenticated, it provides a serialised bearer token to protect endpoints
+
+Flask Marshmallow - this is a Flask extension that is popular and used for serialisation and deserialisation. It is a tool that converts data from database table into JSON format that can be returned 
+Flask Bcrypt - this allows us to encrypt and hash the passwords and securely store and manage user passwords. this provides a layer of security as the password is not stored in database as inputted but are all encrypted
+Psycopg = Psycopg is the most popular PostgreSQL database adapter for the Python programming language. SQL queries are executed with the help of execute() method and command. 
+python-dotenv - Python-dotenv reads key-value pairs from a .env file and can set them as environment variables. This allowed us to create .env and .flaskenv system files
 
 These libraries are imported and installed in requirements.txt
 
 # R8 Describe your projects models in terms of the relationships they have with each other
 
-- 
+There were five models created in this application: 
+1. User model - this is the model for users and admins that uses this applicatio
+2. Recipe model - this model has the information on recipes
+3. Reviews model - this is a model that reviews recipes
+4. Saved recipe model - this model is a list of saved recipes and status of each saved recipes
+5. Favourite model - this model is a list of favourite recipes by the user
+
+## User model
+The primary key is id and referred to as user.id as a Foreign Key in other model. If the user is deleted it will cascade a deletion for reviews, saved recipe and favourite model
+
+
+## Recipe model 
+
+The primary key is id and is referred to as recipe.id as a Foreign key in other models. This model is related to all the other models
+
+## Reviews model
+
+The primary key is id. It uses two foreign keys constraints from: user model and recipe model. 
+Each review is directly tied to a recipe_id 
+
+## Saved recipe model
+
+The primary key is id. It uses two foreign keys constraints from: user model and recipe model. 
+It has the option to add status to the list if you've tried the recipe or want to try the recipe
+
+## Favourite model
+
+The primary key is id. It uses two foreign keys constraints from: user model and recipe model. 
+This is similar to saved recipe model but does not have any other independent body data and is simply a list of favourite recipe. It requires user id and recipe id as the Foreign Keys in the table. Date is saved on the day the recipes are added to the table. 
+
+
 
 # R9 Discuss the database relations to be implemented in your application
 
@@ -301,6 +334,10 @@ Saved recipe table:
 reviews table:
 - user - one to many. many users can have many reviews but each review can only relate to one user
 - recipe - many to many, a recipe can have many reviews but each review is done for one recipe. 
+
+Favourite table:
+- user - one to one relationship, 
+- recipe - one to many - one recipe can be in many different favourites table
 
 
 
