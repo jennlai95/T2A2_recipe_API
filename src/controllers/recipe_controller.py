@@ -11,14 +11,15 @@ from sqlalchemy.exc import IntegrityError
 recipes_bp = Blueprint('recipes',__name__, url_prefix='/recipes')
 recipes_bp.register_blueprint(reviews_bp,url_prefix ='<int:recipe_id>/reviews')
 
-@recipes_bp.route('/')
+#create route to retrieve all recipes 
+@recipes_bp.route('/', methods = ['GET'])
 def get_all_recipes():
     stmt = db.select(Recipe).order_by(Recipe.difficulty_rating.desc())
     recipes = db.session.scalars(stmt)
     return recipes_schema.dump(recipes)
 
 #Get one recipe and return error if recipe id doesn't exist
-@recipes_bp.route('/<int:id>')
+@recipes_bp.route('/<int:id>', methods = ['GET'])
 def get_one_recipe(id):
     stmt = db.select(Recipe).filter_by(id=id)
     recipe = db.session.scalar(stmt)
@@ -60,6 +61,7 @@ def create_recipe():
 def delete_one_recipe(id):
     stmt = db.select(Recipe).filter_by(id=id)
     recipe = db.session.scalar(stmt)
+    #if recipe exists then delete and if not return 404 error
     if recipe: 
         db.session.delete(recipe)
         db.session.commit()
@@ -67,7 +69,7 @@ def delete_one_recipe(id):
     else: 
         return {'error': f'Recipe not found with id {id}'}, 404
 
-#create put and patch method, editing method
+#create put and patch method, editing method, uses existing data if no new data is inputted
 @recipes_bp.route('/<int:id>', methods = ['PUT','PATCH'])
 @jwt_required()   
 def update_one_recipe(id):

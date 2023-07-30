@@ -10,13 +10,6 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 reviews_bp = Blueprint('reviews',__name__, url_prefix='/reviews')
 
 
-# @reviews_bp.route('/')
-# def get_all_reviews():
-#     stmt = db.select(Review).order_by(Review.date.desc())
-#     reviews = db.session.scalars(stmt)
-#     return reviews_schema.dump(reviews)
-
-
 #Get  review for recipe and return error if recipe id doesn't exist
 @reviews_bp.route('/')
 def get_all_review(recipe_id):

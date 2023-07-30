@@ -8,7 +8,7 @@ class SavedRecipe(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date) # Date created
-    
+    tried = db.Column(db.String)
     # Recipe relationship
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'), nullable=False)
     recipes = db.relationship('Recipe', back_populates='saved_recipes')
@@ -23,7 +23,7 @@ class SavedRecipeSchema(ma.Schema):
     recipes = fields.Nested ('RecipeSchema', only = ['id','title'])
     user = fields.Nested ('UserSchema', only = ['name','email'])
     class Meta:
-        fields = ('id','date','recipe_id','user')
+        fields = ('id','date','recipe_id','user','tried')
 
 saved_recipe_schema = SavedRecipeSchema()
 saved_recipes_schema = SavedRecipeSchema(many=True)
