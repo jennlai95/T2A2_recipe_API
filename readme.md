@@ -105,7 +105,11 @@ more server or hardware resources than other databases. However, with this appli
 
 ORM is Object Relational Mapping and is used to interact between application and a datbase. This lets users to interact with the database by using queries rather than in SQL. It connects to database server, generates query, fetches data and serialises password. 
 
-Some of the benefits is that ORM can be used to connect to the application with the SQL code without having to rewrite the code.It also means that users do not need any SQL knowledge to use the ORM. ORM is also easier and more cost-effective to maintain over time as it automates object-to-table and table-to-object conversion. 
+Some of the benefits is that ORM can be used to connect to the application with the SQL code without having to rewrite the code.It also means that general users do not need any SQL knowledge to use the ORM. ORM is also easier and more cost-effective to maintain over time as it automates object-to-table and table-to-object conversion. ORM handles the relationships between entities and maintains the integrity of the relationship.
+
+Some of the cons is that learning and installing ORM as a beginner can be time-conusming. Minor knowledge of SQL, ERD and database is still necessary for developers using the ORM so that the database can be created correctly with the correct relations. For example, knowledge of ERD is needed so that developers can properly define the relationships in the object-oriented models. 
+
+An example is SQLAlchemy which we will be using in our app. This is commonly used for python apps built in Flask. One of the main benefits of ORM is that the application can be written in a programming language that is familiar such as Python, JavaScript instead of writing in SQL. SQLAlchemy helps tranlate the code into SQL query. This means there will be less and cleaner code compared to embedded SQL. 
 
 # R5 Document all endpoints for your API
 Each models have CRUD endpoints (Create, Read, Update and delete endpoints). For any body data request, it needs to be submitted in JSON. 
