@@ -1,6 +1,6 @@
 from init import db, ma 
 from marshmallow import fields, validates
-from marshmallow.validate import Length, And, Regexp, OneOf
+from marshmallow.validate import Length, And, Regexp, Range
 from marshmallow.exceptions import ValidationError
 
 #field validation for recipe schema
@@ -28,18 +28,20 @@ class ReviewSchema(ma.Schema):
     user = fields.Nested('UserSchema', only=['name','email'])
     recipe = fields.Nested('RecipeSchema', only=['title'])
     
-    user_rating = fields.Integer(validate=OneOf(VALID_USER_RATINGS))
+    #validate title 
+    title = fields.String(required=True, validate=And(
+        Length(min=2, error='Title must be at least 2 characters long'),
+        Regexp('^[a-zA-Z0-9 ]+$', error='Only letters, spaces and numbers are allowed')
+    ))
     
+    #validate difficulty rating so it is within 1-5 range
+    user_rating = fields.Integer(validate=Range(min=1, max=5))
     
     @validates('user_rating')
     def validate_user_rating(self, value):
-        print(self)
-        if value == VALID_USER_RATINGS[3]:
-            stmt = db.select(db.func.count()).select_from(Review).filter_by(status=VALID_USER_RATINGS[3])
-            count = db.session.scalar(stmt)
-            # if there is an ongoing review or not
-            if count > 0:
-                raise ValidationError('You already have an ongoing review rating')
+        if not 1 <= value <= 5:
+            raise ValidationError('User rating must be an integer between 1 and 5.')
+        
     
     class Meta:
         fields = ('id','recipe','title','comment','date','user_rating','user')

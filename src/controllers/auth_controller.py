@@ -7,8 +7,10 @@ from psycopg2 import errorcodes
 from datetime import timedelta
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
+#  database_bp = Blueprint ('database_name',__name__, url_prefix = '/endpoint url name')
 auth_bp = Blueprint('auth',__name__, url_prefix='/auth')
 
+#Create register route for new users to create their user
 @auth_bp.route('/register', methods=['POST'])
 def auth_register():
     try: 
@@ -32,13 +34,14 @@ def auth_register():
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
             return { 'error': f'The {err.orig.diag.column_name} is required' }, 409
 
+# Create login route for users to login and to request JSON web token to autheticate
 @auth_bp.route('/login', methods=['POST'])
 def auth_login():
     body_data = request.get_json()
     # Find the user by email address
     stmt = db.select(User).filter_by(email=body_data.get('email'))
     user = db.session.scalar(stmt)
-    # If user exists and password is correct
+    # If user exists and password is correct the create token and return field
     if user and bcrypt.check_password_hash(user.password, body_data.get('password')):
         token = create_access_token(identity=str(user.id), expires_delta=timedelta(days=1))
         return { 'email': user.email, 'token': token, 'is_admin': user.is_admin }

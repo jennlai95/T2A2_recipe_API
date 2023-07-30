@@ -11,6 +11,7 @@ from sqlalchemy.exc import IntegrityError
 #create recipes route   - database_bp = Blueprint ('database_name',__name__, url_prefix = '/endpoint url name')
 saved_recipes_bp = Blueprint('saved_recipes',__name__, url_prefix='/saved_recipes')
 
+#Get saved recipes for user
 @saved_recipes_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_all_saved_recipes():

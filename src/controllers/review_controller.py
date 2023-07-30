@@ -7,7 +7,7 @@ from datetime import date
 from flask_jwt_extended import get_jwt_identity, jwt_required
 import functools
 
-#create reviews route 
+#create reviews route -  database_bp = Blueprint ('database_name',__name__, url_prefix = '/endpoint url name')
 reviews_bp = Blueprint('reviews',__name__, url_prefix='/reviews')
 
 #create admin auth
@@ -23,8 +23,9 @@ def authorise_as_admin(fn):
             return {'error': 'Not authorised to perform delete'}, 403     
     return wrapper
 
-#GET all reviews for a recipe - needs recipe id
-@reviews_bp.route('/')
+# GET all reviews for a recipe - needs recipe id
+# recipes/recipe_id/reviews - GET 
+@reviews_bp.route('/', methods = ['GET'])
 def get_all_review(recipe_id):
     # filter all review by recipe id and give all reviews under the recipe id
     review = db.session.query(Review).filter_by(recipe_id=recipe_id)
@@ -40,7 +41,7 @@ def get_all_review(recipe_id):
 @reviews_bp.route('/', methods = ['POST'])
 @jwt_required()
 def create_review(recipe_id):
-    body_data = request.get_json()
+    body_data = review_schema.load(request.get_json())
     stmt = db.select(Recipe).filter_by(id=recipe_id) #select * from recipes where id = recipe_id
     recipe = db.session.scalar(stmt)
     #create a new Review instance if recipe exists
@@ -82,7 +83,7 @@ def delete_review(recipe_id,review_id):
 @reviews_bp.route('/<int:review_id>', methods = ['PUT','PATCH'])
 @jwt_required()   
 def update_review(recipe_id,review_id):
-    body_data = request.get_json()
+    body_data = review_schema.load(request.get_json())
     stmt = db.select(Review).filter_by(id=review_id)
     review = db.session.scalar(stmt)
     if review:

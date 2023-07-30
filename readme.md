@@ -194,6 +194,7 @@ required: needs to be original user to delete. requires review_id and user login
 Route: DELETE /recipes/recipe_id/reviews/review_id
 required: authorisation as admin to delete
 if a regular user tried to delete
+
 ![Alt text](doc/delete_review.png)
 
 admin can delete
@@ -227,6 +228,7 @@ example of list of recipes
 
 - PUT or PATCH saved recipe list
 ROUTE: PUT or PATCH: /saved_recipes/id
+required: needs user authentication to update the list
 
 ![Patch](doc/PATCH_saved_recipe.png)
 
@@ -257,6 +259,7 @@ REQUIRED: user id is required
 ROUTE: /favourites/id
 method: 'DELETE'
 REQUIRED: user id and recipe id is required. only the owner of the list can delete a favourited recipe
+
 ![Alt text](doc/delete_favourite.png)
 
 # R6 An ERD for your app
@@ -272,8 +275,11 @@ SQLAlchemy - this is an ORM tool to translate Flask queries into SQL so we can u
 Flask JWT extended - this is a package that provides JWT (JSON Web Token) for flask applications. its used for authentication and acess control in the endpoints. It authenticates the users and when succesfully authenticated, it provides a serialised bearer token to protect endpoints
 
 Flask Marshmallow - this is a Flask extension that is popular and used for serialisation and deserialisation. It is a tool that converts data from database table into JSON format that can be returned 
+
 Flask Bcrypt - this allows us to encrypt and hash the passwords and securely store and manage user passwords. this provides a layer of security as the password is not stored in database as inputted but are all encrypted
+
 Psycopg = Psycopg is the most popular PostgreSQL database adapter for the Python programming language. SQL queries are executed with the help of execute() method and command. 
+
 python-dotenv - Python-dotenv reads key-value pairs from a .env file and can set them as environment variables. This allowed us to create .env and .flaskenv system files
 
 These libraries are imported and installed in requirements.txt
@@ -295,10 +301,11 @@ The primary key is id and referred to as user.id as a Foreign Key in other model
 
 The primary key is id and is referred to as recipe.id as a Foreign key in other models. This model is related to all the other models
 
+
 ## Reviews model
 
 The primary key is id. It uses two foreign keys constraints from: user model and recipe model. 
-Each review is directly tied to a recipe_id 
+Each review is directly tied to a recipe_id. Each review requires a user_rating. 
 
 ## Saved recipe model
 
