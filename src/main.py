@@ -6,6 +6,7 @@ from controllers.auth_controller import auth_bp
 from controllers.recipe_controller import recipes_bp
 from controllers.review_controller import reviews_bp
 from controllers.saved_recipe_controller import saved_recipes_bp
+from controllers.favourite_controller import favourites_bp
 from datetime import timedelta
 from marshmallow.exceptions import ValidationError
 
@@ -32,6 +33,7 @@ def create_app():
     app.register_blueprint(recipes_bp)
     app.register_blueprint(reviews_bp)
     app.register_blueprint(saved_recipes_bp)
+    app.register_blueprint(favourites_bp)
   
     
     return app
